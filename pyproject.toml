@@ -44,7 +44,7 @@ scripts = { csl_unsorted = "citeproc.scripts.csl_unsorted:main" }
 requires-python = ">=3.9"
 dependencies = [ "lxml" ]
 [project.optional-dependencies]
-test = [ "pynose" ]
+test = [ "pytest", "pytest-cov" ]
 full = [ "citeproc-py-styles" ]
 
 [tool.setuptools]
@@ -56,6 +56,9 @@ citeproc = [
     "data/schema/*.rng",
     "data/styles/*.csl",
 ]
+
+[tool.pytest.ini_options]
+addopts = "--cov=citeproc"
 
 # Likely obsolete:
 # https://github.com/pypa/pip/issues/6334

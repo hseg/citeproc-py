@@ -57,8 +57,6 @@ class custom_develop(develop):
 setup(
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass({'build_py': custom_build_py, 'develop': custom_develop}),
-    #test_suite='nose.collector',
-
     long_description=long_description(),
     long_description_content_type='text/markdown',
 )

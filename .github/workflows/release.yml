@@ -40,7 +40,7 @@ jobs:
 
       - name: Create release
         run: |
-          if [ "${{ github.event_name }}" = workflow_dispatch ]
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]
           then opts=
           else opts=--only-publish-with-release-label
           fi

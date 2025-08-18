@@ -1,3 +1,30 @@
+# v0.8.3 (Mon Aug 18 2025)
+
+#### 🐛 Bug Fix
+
+- setup: match license label with actual text [#175](https://github.com/citeproc-py/citeproc-py/pull/175) ([@tmorrell](https://github.com/tmorrell))
+- Fix Non-existent Terms [#156](https://github.com/citeproc-py/citeproc-py/pull/156) ([@JVickery-TBS](https://github.com/JVickery-TBS))
+
+#### 🏠 Internal
+
+- Remove hardcoded option for auto to onlyPublishWithReleaseLabel [#178](https://github.com/citeproc-py/citeproc-py/pull/178) ([@yarikoptic](https://github.com/yarikoptic))
+- release action: missing semicolon [#177](https://github.com/citeproc-py/citeproc-py/pull/177) ([@tmorrell](https://github.com/tmorrell))
+- release action: missing quotes [#176](https://github.com/citeproc-py/citeproc-py/pull/176) ([@tmorrell](https://github.com/tmorrell))
+- coveralls: try to reenable [#163](https://github.com/citeproc-py/citeproc-py/pull/163) ([@tmorrell](https://github.com/tmorrell))
+
+#### 📝 Documentation
+
+- Fix some formatting issues in README [#164](https://github.com/citeproc-py/citeproc-py/pull/164) ([@alexfikl](https://github.com/alexfikl))
+
+#### Authors: 4
+
+- Alex Fikl ([@alexfikl](https://github.com/alexfikl))
+- Jesse Vickery ([@JVickery-TBS](https://github.com/JVickery-TBS))
+- Tom Morrell ([@tmorrell](https://github.com/tmorrell))
+- Yaroslav Halchenko ([@yarikoptic](https://github.com/yarikoptic))
+
+---
+
 # v0.8.2 (Wed Mar 12 2025)
 
 #### 🏠 Internal

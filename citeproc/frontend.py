@@ -44,16 +44,47 @@ class CitationStylesLocale(CitationStylesXML):
 
 class CitationStylesStyle(CitationStylesXML):
     def __init__(self, style, locale=None, validate=True):
+        style_path = None
+
         try:
-            if not os.path.exists(style):
-                style = os.path.join(STYLES_PATH, '{}.csl'.format(style))
+            # First check if style is a path that exists
+            if os.path.exists(style):
+                style_path = style
+            else:
+                # Try bundled styles
+                bundled_path = os.path.join(STYLES_PATH, f'{style}.csl')
+                if os.path.exists(bundled_path):
+                    style_path = bundled_path
+                else:
+                    # Try to load from citeproc-py-styles if available
+                    try:
+                        from citeproc_py_styles import get_style_filepath
+                        style_path = get_style_filepath(style)
+                    except ImportError:
+                        # citeproc-py-styles not installed, raise with helpful message
+                        raise ValueError(
+                            f"'{style}' not found in bundled styles ({STYLES_PATH}). "
+                            f"To access more styles, install the citeproc-py-styles package with: "
+                            f"pip install citeproc-py-styles"
+                        )
+                    except (KeyError, FileNotFoundError):
+                        # Style not found in citeproc-py-styles
+                        raise ValueError(
+                            f"'{style}' not found in bundled styles ({bundled_path}) "
+                            f"or in citeproc-py-styles package"
+                        )
         except TypeError:
             pass
+
+        if style_path is None:
+            # If we couldn't find the style anywhere, raise an error
+            raise ValueError(f"'{style}' is not a known style")
+
         try:
             super(CitationStylesStyle, self).__init__(
-                style, validate=validate)
+                style_path, validate=validate)
         except IOError:
-            raise ValueError("'{}' is not a known style".format(style))
+            raise ValueError(f"'{style}' is not a known style")
         if locale is None:
             locale = self.root.get('default-locale', 'en-US')
         self.root.set_locale_list(locale, validate=validate)

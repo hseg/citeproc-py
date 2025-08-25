@@ -44,22 +44,26 @@ class CitationStylesLocale(CitationStylesXML):
 
 class CitationStylesStyle(CitationStylesXML):
     def __init__(self, style, locale=None, validate=True):
-        style_path = None
+        style_src = None
 
         try:
-            # First check if style is a path that exists
-            if os.path.exists(style):
-                style_path = style
+            # lxml can take file-like objects, so check if we are dealing with
+            # strings first
+            if not isinstance(style, str):
+                pass  # pass through for a generic handling below
+            # It could still be a URL etc, first check if style is a path that exists
+            elif os.path.exists(style):
+                style_src = style
             else:
                 # Try bundled styles
                 bundled_path = os.path.join(STYLES_PATH, f'{style}.csl')
                 if os.path.exists(bundled_path):
-                    style_path = bundled_path
+                    style_src = bundled_path
                 else:
                     # Try to load from citeproc-py-styles if available
                     try:
                         from citeproc_py_styles import get_style_filepath
-                        style_path = get_style_filepath(style)
+                        style_src = get_style_filepath(style)
                     except ImportError:
                         # citeproc-py-styles not installed, raise with helpful message
                         raise ValueError(
@@ -76,13 +80,17 @@ class CitationStylesStyle(CitationStylesXML):
         except TypeError:
             pass
 
-        if style_path is None:
-            # If we couldn't find the style anywhere, raise an error
-            raise ValueError(f"'{style}' is not a known style")
+        if style_src is None:
+            if style:
+                # Assume it's a file-like object or string containing XML data
+                style_src = style
+            else:
+                # If we couldn't find the style anywhere, raise an error
+                raise ValueError(f"'{style}' is not a known style")
 
         try:
             super(CitationStylesStyle, self).__init__(
-                style_path, validate=validate)
+                style_src, validate=validate)
         except IOError:
             raise ValueError(f"'{style}' is not a known style")
         if locale is None:

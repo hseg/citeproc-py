@@ -31,7 +31,7 @@ class TestStyleLoading(unittest.TestCase):
             mock_exists.side_effect = lambda path: False
 
             # Mock the import to fail
-            with patch.dict('sys.modules', {'citeproc_py_styles': None}):
+            with patch.dict('sys.modules', {'citeproc_styles': None}):
                 with self.assertRaises(ValueError) as context:
                     CitationStylesStyle('nonexistent-style', validate=False)
 
@@ -51,7 +51,7 @@ class TestStyleLoading(unittest.TestCase):
             # Second call checks bundled path (False)
             mock_exists.side_effect = [False, False]
 
-            with patch.dict('sys.modules', {'citeproc_py_styles': mock_module}):
+            with patch.dict('sys.modules', {'citeproc_styles': mock_module}):
                 # Mock the parent class __init__ to set root properly
                 def mock_init(self, path, validate=False):
                     # Create a mock root object 
@@ -79,7 +79,7 @@ class TestStyleLoading(unittest.TestCase):
             # Style doesn't exist as file or bundled
             mock_exists.return_value = False
 
-            with patch.dict('sys.modules', {'citeproc_py_styles': mock_module}):
+            with patch.dict('sys.modules', {'citeproc_styles': mock_module}):
                 with self.assertRaises(ValueError) as context:
                     CitationStylesStyle('unknown-style', validate=False)
 
@@ -98,7 +98,7 @@ class TestStyleLoading(unittest.TestCase):
             # Style doesn't exist as file or bundled
             mock_exists.return_value = False
 
-            with patch.dict('sys.modules', {'citeproc_py_styles': mock_module}):
+            with patch.dict('sys.modules', {'citeproc_styles': mock_module}):
                 with self.assertRaises(ValueError) as context:
                     CitationStylesStyle('missing-style', validate=False)
 
@@ -107,3 +107,20 @@ class TestStyleLoading(unittest.TestCase):
                 self.assertIn('not found in bundled styles', error_msg)
                 self.assertIn('or in citeproc-py-styles package', error_msg)
 
+    def test_citeproc_py_styles_load(self):
+        """Test loading a real style from citeproc-py-styles if installed"""
+        try:
+            import citeproc_styles
+        except ImportError:
+            self.skipTest("citeproc-py-styles (provides citeproc_styles package) not installed")
+        from citeproc_styles import get_style_filepath
+        # Attempt to load a known style from citeproc-py-styles
+        style_name = 'chicago-author-date'
+        style_path = get_style_filepath(style_name)
+        style = CitationStylesStyle(style_name, validate=False)
+        self.assertIsNotNone(style)
+        self.assertTrue(hasattr(style, 'root'))
+        # And loading with the full path should also work
+        style = CitationStylesStyle(style_path, validate=False)
+        self.assertIsNotNone(style)
+        self.assertTrue(hasattr(style, 'root'))

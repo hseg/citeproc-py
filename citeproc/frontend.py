@@ -62,8 +62,7 @@ class CitationStylesStyle(CitationStylesXML):
                 else:
                     # Try to load from citeproc-py-styles if available
                     try:
-                        from citeproc_py_styles import get_style_filepath
-                        style_src = get_style_filepath(style)
+                        import citeproc_styles
                     except ImportError:
                         # citeproc-py-styles not installed, raise with helpful message
                         raise ValueError(
@@ -71,6 +70,9 @@ class CitationStylesStyle(CitationStylesXML):
                             f"To access more styles, install the citeproc-py-styles package with: "
                             f"pip install citeproc-py-styles"
                         )
+                    try:
+                        from citeproc_styles import get_style_filepath
+                        style_src = get_style_filepath(style)
                     except (KeyError, FileNotFoundError):
                         # Style not found in citeproc-py-styles
                         raise ValueError(
